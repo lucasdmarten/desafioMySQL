@@ -3,10 +3,15 @@ const path = require("path");
 const mysql = require("mysql");
 const cookieParser = require("cookie-parser");
 
+const {createTokens, validateToken} = require("./JWT.js");
+
+
 const routesAPI = require('./routes/pages');
 const routesAUTH = require('./routes/auth');
 
+
 const dotenv = require("dotenv");
+const { read } = require("fs");
 dotenv.config({
     path: './.env'
 });
@@ -45,6 +50,9 @@ app.set('view engine', 'hbs');
 // Definindo rotas a partir de ./routes/pages.js
 app.use('/', routesAPI)
 app.use('/auth', routesAUTH)
+
+
+
 
 app.listen(4000, ()=>{
     console.log("Runserver on 4000...");

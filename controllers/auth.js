@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const {createTokens} = require("../JWT");
 const dotenv = require("dotenv");
 dotenv.config({
     path: './.env'
@@ -38,11 +39,11 @@ exports.register = (req,res) =>{
                 console.log(error);
             }
             if (results.length > 0) {
-                return res.render('register', {
+                return res.status(400).json({
                     message: 'That email is already in use'
                 })
             } else if(password !== passwordConfirm) {
-                return res.render("register", {
+                return res.status(400).json({
                     message: 'Passwords do not match'
                 });
             }
@@ -61,8 +62,11 @@ exports.register = (req,res) =>{
                     if (error) {
                         console.log(error);
                     } else {
-                        return res.render('register',{
-                            message: 'User registered'
+                        return res.status(200).json({
+                            message: 'User registered',
+                            name:username,
+                            email:email,
+                            password: hashedPassword
                         });
                     }
                 });
@@ -91,14 +95,15 @@ exports.login = async (req,res) =>{
                         message: 'Email or Password is incorrect'
                     })
                 } else {
-                    const id = results[0].id;
-                    
-                    // or const token = jwt.sign( {id} );
-                    const token = jwt.sign( {id:id}, process.env.JWT_SECRET, {
-                        expiresIn: process.env.JWT_EXPIRES_IN
-                    });
+                    const id = results[0].id_usuario;
+                    const accessToken = createTokens(id);
+                    console.log("ID: "+id+"  Token:  "+accessToken)
+                    // // or const token = jwt.sign( {id} );
+                    // const token = jwt.sign( {id:id}, process.env.JWT_SECRET, {
+                    //     expiresIn: process.env.JWT_EXPIRES_IN
+                    // });
 
-                    console.log("The token is: " + token);
+                    // console.log("The token is: " + token);
 
                     const cookieOptions = {
                         expires: new Date(
@@ -107,13 +112,13 @@ exports.login = async (req,res) =>{
                         httpOnly: true
                     }
 
-                    res.cookie('jwt', token, cookieOptions);
+                    res.cookie('acess-token', accessToken, cookieOptions);
                     //res.cookie('teste', 'teste', cookieOptions);
 
                     // or res.status(200).redirect('/?valid=' + token)
                     res.json({
                         email: email,
-                        token: token
+                        token: accessToken
                     });
                     
 
@@ -214,3 +219,55 @@ exports.add_naver = (req,res) =>{
         }
     )
 }
+
+exports.list_navers = (req,res, next) =>{
+    
+    db.query(
+        "SELECT * FROM navers", (error,results) =>{
+            if(error){
+                console.log(error);
+            } else {
+                //console.log(results[0].firstName)
+                const data = [];
+                for (var i=0; i<results.length; i++){
+                    data.push({
+                            firstName: results[i].firstName,
+                            lastName: results[i].lastName,
+                            birthDate: results[i].birthDate,
+                            admissionDate: results[i].admissionDate,
+                            jobRole: results[i].jobRole,
+                            id_projetos: results[i].id_projetos
+                    });
+                }
+                res.status(200).json({data:data})
+            }
+        }
+    )
+}
+
+exports.list_projetos = (req,res, next) =>{
+    
+    db.query(
+        "SELECT * FROM projetos", (error,results) =>{
+            if(error){
+                console.log(error);
+            } else {
+                //console.log(results[0].firstName)
+                const data = [];
+                for (var i=0; i<results.length; i++){
+                    data.push({
+                            id: results[i].id_projeto,
+                            name_projeto: results[i].name_projeto,
+                            
+                    });
+                }
+                res.status(200).json({data:data})
+            }
+        }
+    )
+
+
+    // res.json({
+    //     message: "OK"
+    // })
+}  
