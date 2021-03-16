@@ -1,4 +1,4 @@
-<h1 align="center">Navedex Api</h1>
+<h1 align="center">Navedex Api (EM DESENVOLVIMENTO)</h1>
 <p align="center"> Sistema desenvolvido para o teste proposto pela empresa <a href="https://github.com/naveteam">Nave</a>.</p>
 
 
@@ -69,6 +69,11 @@ mysql> FLUSH PRIVILEGES;
  # Runserver...
  $ npm start
  ```
+<br>
+<br>
+<br>
+
+## AUTENTICAÇÃO:
 ### Rota para cadastro:
 <p>Registro de usuario:</p>
 
@@ -79,35 +84,49 @@ mysql> FLUSH PRIVILEGES;
 <p>Aqui sera feito login com base no cadastro feito préviamente, e será liberado o token access.</p>
 
  ```bash
- http://localhost:8000/auth/login/
+ http://localhost:4000/auth/login/
  ```
 ### O registro e o login também podem ser feitos a partir de uma interface web:
  ```bash
- http://localhost:8000/register/
- http://localhost:8000/login/
+ http://localhost:4000/register/
+ http://localhost:4000/login/
  ```
 
-### Rota para criar navers e projetos:
+ <br>
+<br>
+<br>
+
+## NAVERS:
+### (STORE) - Rota para criar navers:
+ ```bash
+ http://localhost:4000/auth/add_naver/
+ ```
+ ### (INDEX) - Rota para listar todos os navers:
  ```bash
  # Navers
- http://localhost:8000/auth/add_naver/
- # Projetos
- http://localhost:8000/auth/add_projeto/
+ http://localhost:4000/auth/list_navers
+ ```
+<br>
+<br>
+<br>
+
+## PROJETOS:
+### (STORE) - Rota para criar projetos:
+ ```bash
+ http://localhost:4000/auth/add_projetos/
+ ```
+ ### (INDEX) - Rota para listar todos os projetos:
+ ```bash
+ # Navers
+ http://localhost:4000/auth/list_projetos
  ```
 
-### Rota para listar todos os Navers e Projetos
- ```bash
- #Navers
- http://localhost:8000/auth/list_navers
- #Projetos
- http://localhost:8000/auth/list_projetos
- ```
 
 
 <br>
 
- <h2> Dificuldades </h2>
- <h3>Relação entre Naver e Projeto:</h3>
- <p>Neste projeto fiquei com muita dificuldade em fazer a relação correta entre Naver e Projeto. Usei o model User do próprio Django mas customizado com email obrigatório. A partir deste model foi criado o objeto Projeto que possui relação ManyToMany com o MyUser, ou seja, um usuario pode participar de N projetos e cada projeto possui relação com N usuarios. Posteriormente foi criado o objeto Naver que está relacionado com usuario a partir do campo OneToOneField, e também projetos a partir do campo ManyToManyField, assim um naver está ligado a apenas UM usuario e o naver pode estar ligado com varios projetos.</p>
- <p>Problema: Não consigo relacionar um Naver a um Projeto e nem o Projeto ao Naver a partir do método POST, só na pagina de admin do Django. Acredito que seja problema na serialização dos models.</p>
+ <h2> Dificuldades:</h2>
+ <h3>EM DESENVOLVIMENTO</h3>
+ <!-- <p>Neste projeto fiquei com muita dificuldade em fazer a relação correta entre Naver e Projeto. Usei o model User do próprio Django mas customizado com email obrigatório. A partir deste model foi criado o objeto Projeto que possui relação ManyToMany com o MyUser, ou seja, um usuario pode participar de N projetos e cada projeto possui relação com N usuarios. Posteriormente foi criado o objeto Naver que está relacionado com usuario a partir do campo OneToOneField, e também projetos a partir do campo ManyToManyField, assim um naver está ligado a apenas UM usuario e o naver pode estar ligado com varios projetos.</p>
+ <p>Problema: Não consigo relacionar um Naver a um Projeto e nem o Projeto ao Naver a partir do método POST, só na pagina de admin do Django. Acredito que seja problema na serialização dos models.</p> -->
  
