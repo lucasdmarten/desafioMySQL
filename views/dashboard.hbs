@@ -1,0 +1,110 @@
+
+
+<!DOCTYPE html>
+<html lang="pt-br" dir="ltr">
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+        <link rel="stylesheet" href="/style.css">
+        <meta charset="utf-8">
+        <title>Dashboard</title>
+    </head>
+    <nav class="navbar has-shadow is-dark">
+        <div class="navbar-brand">
+            <a href="" class="navbar-item">
+                <img src="/logo.png" alt="logo"  style="max-height: 150px" class="py-2 px-2">
+            </a>
+            <a class="navbar-burger" id="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+        </div>
+        <div class="navbar-menu" id="nav-links" onclick="myFunction()">
+            <div class="navbar-end">
+                <a href="/" class="navbar-item">Home</a>
+                <a href="/register/" class="navbar-item">Register</a>
+                <a href="/login/" class="navbar-item">Login</a>
+                
+            </div>
+        </div>
+    </nav>
+    <body>
+        <h1>ADICIONAR PROJETOS:</h1>
+        <section class="section">
+                <div class="container">
+                    <div class="columns is-centered">
+                        <div class="column is-half">
+                            
+                            <form class="form-group" action="/auth/register/" method="post">
+                                <div class="column  mx-6">
+                                    <!-- NAME -->
+                                    <div class="field">
+                                        <h1><strong>Faça o registro para liberar acesso ao token:</strong></h1><br>
+                                        <label for="name" class="label">Name</label>
+                                        <div class="control">
+                                            <input class="input" id="name" type="text" name="name">
+                                        </div>
+                                    </div>
+                                    <!-- EMAIL -->
+                                    <div class="field">
+                                        <label for="email" class="label">Email</label>
+                                        <div class="control has-icons-left has-icons-right">
+                                            <input id="email" class="input is-danger" type="email" name="email">
+                                            <span class="icon is-small is-left">
+                                                <i class="fas fa-envelope"></i>
+                                            </span>
+                                            <span class="icon is-small is-right">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+
+
+
+                                    <!-- PASSWORD -->
+                                    <div class="field">
+                                        <label for="password" class="label">Password</label>
+                                        <div class="control has-icons-left has-icons-right">
+                                            <input id="password" class="input is-danger" type="password" name="password" >
+                                            <span class="icon is-small is-left">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                            <span class="icon is-small is-right">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!-- PASSWORD CONFIRM -->
+                                    <div class="field">
+                                        <label for="passwordConfirm" class="label">Password confirm</label>
+                                        <div class="control has-icons-left has-icons-right">
+                                            <input id="passwordConfirm" class="input is-danger" type="password" name="passwordConfirm" >
+                                            <span class="icon is-small is-left">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                            <span class="icon is-small is-right">
+                                                <i class="fas fa-lock"></i>
+                                            </span>
+                                        </div>
+                                    </div>                                    
+
+
+                                    <div class="field is-grouped">
+                                        <div class="control">
+                                            <button class="button is-link">Submit</button>
+                                        </div>
+
+                                        {{#if message}}
+                                            <h4>{{message}}</h4>
+                                        {{/if}}
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        </section>
+    </body>
+</html>

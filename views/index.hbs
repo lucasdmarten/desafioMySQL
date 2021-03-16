@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br" dir="ltr">
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+        <link rel="stylesheet" href="/style.css">
+        <meta charset="utf-8">
+        <title>Home</title>
+    </head>
+    <nav class="navbar has-shadow is-dark">
+        <div class="navbar-brand">
+            <a href="" class="navbar-item">
+                <img src="/logo.png" alt="logo"  style="max-height: 150px" class="py-2 px-2">
+            </a>
+            <a class="navbar-burger" id="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+        </div>
+        <div class="navbar-menu" id="nav-links" onclick="myFunction()">
+            <div class="navbar-end">
+                <a href="/" class="navbar-item">Home</a>
+                <a href="/register/" class="navbar-item">Register</a>
+                <a href="/login/" class="navbar-item">Login</a>
+            </div>
+        </div>
+    </nav>
+    <body>
+        {{#if message}}
+        <section class="section">
+            <div class="container">
+                <p>
+                    <h1>
+                        <strong>The token is: </strong>
+                    </h1>
+                </p>
+                <div class="columns is-centered">
+                    <p>
+                        <h3>
+                            {{message}}
+                        </h3>
+                    </p>
+                </div>
+            </div>
+        </section>
+        {{/if}}     
+        <section class="section">
+                <div class="container">
+                    <div class="columns is-centered">
+                        <div class="column is-half">
+                            <h1><strong>ADICIONAR PROJETOS:</strong> </h1>
+                            <form class="form-group" action="/auth/add_projeto/" method="post">
+                                <div class="column  mx-6">
+                                    <!-- NAME -->
+                                    <div class="field">
+                                        <label for="name_projeto" class="label">Nome do projeto:</label>
+                                        <div class="control">
+                                            <input class="input" id="name_projeto" type="text" name="name_projeto">
+                                        </div>
+                                    </div>
+
+                                    <div class="field is-grouped">
+                                        <div class="control">
+                                            <button class="button is-link">Submit</button>
+                                            {{#if message}}
+                                            <h4>{{message}}</h4>
+                                            {{/if}}
+                                        </div>
+
+                                        
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        </section> 
+        <section class="section">
+                <div class="container">
+                    <div class="columns is-centered">
+                        <div class="column is-half">
+                            <h1><strong>ADICIONAR NAVERS:</strong> </h1>
+                            <form class="form-group" action="/auth/add_naver/" method="post">
+                                <div class="column  mx-6">
+                                    <!-- FIRST NAME -->
+                                    <div class="field">
+                                        <label for="firstName" class="label">FIRST NAME:</label>
+                                        <div class="control">
+                                            <input class="input" id="firstName" type="text" name="firstName">
+                                        </div>
+                                    </div>
+
+                                    <!-- LAST NAME -->
+                                    <div class="field">
+                                        <label for="lastName" class="label">LAST NAME:</label>
+                                        <div class="control">
+                                            <input class="input" id="lastName" type="text" name="lastName">
+                                        </div>
+                                    </div>
+
+                                    <!-- BIRTHDATE -->
+                                    <div class="field">
+                                        <label for="birthDate" class="label">BIRTHDATE:</label>
+                                        <div class="control">
+                                            <input class="input" id="birthDate" type="date" name="birthDate">
+                                        </div>
+                                    </div>
+
+                                    <!-- ADMISSIONDATE -->
+                                    <div class="field">
+                                        <label for="admissionDate" class="label">ADMISSIONDATE:</label>
+                                        <div class="control">
+                                            <input class="input" id="admissionDate" type="date" name="admissionDate">
+                                        </div>
+                                    </div>
+
+                                    <!-- JOBROLE -->
+                                    <div class="field">
+                                        <label for="jobRole" class="label">JOBROLE:</label>
+                                        <div class="control">
+                                            <input class="input" id="jobRole" type="text" name="jobRole">
+                                        </div>
+                                    </div>
+
+                                    <!-- id_projetos -->
+                                    <div class="field">
+                                        <label for="id_projetos" class="label">IDPROJETOS:</label>
+                                        <div class="control">
+                                            <input class="input" id="id_projetos" type="number" name="id_projetos">
+                                        </div>
+                                    </div>
+
+                                    <div class="field is-grouped">
+                                        <div class="control">
+                                            <button class="button is-link">Submit</button>
+                                            {{#if message}}
+                                            <h4>{{message}}</h4>
+                                            {{/if}}
+                                        </div>
+
+                                        
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        </section> 
+    </body>
+</html>
