@@ -20,6 +20,34 @@ db.connect( (error) => {
     }
 });
 
+exports.teste = (req,res) =>{
+    user = req.cookies['acess-token-id']
+    db.query(
+        "SELECT * FROM navers WHERE id_usuario = ?",
+        [user],
+        (erro, results) =>{
+            if (erro) {
+                console.log(errp);
+            } else if (results.length < 0) {
+                console.log(results.length);
+                res.status(400).json({
+                    message: "Não há resultados na query"
+                })
+            } else {
+                console.log(results)
+                const id_naver = results[0].id_naver;
+                const naverData = results[0];
+                res.json({
+                    id_naver:id_naver,
+                    naverData:naverData.lastName
+                })
+
+
+            }
+        }
+    )
+}
+// AUTENTICAÇÃO
 exports.register = (req,res) =>{
     console.log(req.body);
     
@@ -37,7 +65,7 @@ exports.register = (req,res) =>{
         async (error, results)=>{
             if(error) {
                 console.log(error);
-            }
+            };
             if (results.length > 0) {
                 return res.status(400).json({
                     message: 'That email is already in use'
@@ -46,14 +74,13 @@ exports.register = (req,res) =>{
                 return res.status(400).json({
                     message: 'Passwords do not match'
                 });
-            }
-
+            };
             let hashedPassword = await bcrypt.hash(password, 8);
             console.log(hashedPassword);
-            
+
             db.query(
                 "INSERT INTO usuarios SET ?",
-                {
+                {   
                     username:username,
                     email:email,
                     password: hashedPassword
@@ -63,27 +90,25 @@ exports.register = (req,res) =>{
                         console.log(error);
                     } else {
                         return res.status(200).json({
-                            message: 'User registered',
+                            message: 'WELCOME:',
                             name:username,
-                            email:email,
-                            password: hashedPassword
+                            email:email
                         });
                     }
                 });
     })
 
 }
-
 exports.login = async (req,res) =>{
     try {
-        const { email, password } = req.body
+        const { email, password } = req.body;
 
         // email==false
         if ( !email || !password ) {
-            return res.status(400).render('login', {
+            return res.status(400).json({
                 message: 'Please provide an email and password'
             })
-        }
+        };
 
         db.query(
             "SELECT * FROM usuarios WHERE email = ?",
@@ -91,20 +116,13 @@ exports.login = async (req,res) =>{
             async (error, results) =>{
                 console.log(results);
                 if ( !results || !(await bcrypt.compare(password, results[0].password)) ) {
-                    res.status(401).render('login', {
+                    res.status(401).json({
                         message: 'Email or Password is incorrect'
                     })
                 } else {
                     const id = results[0].id_usuario;
                     const accessToken = createTokens(id);
                     console.log("ID: "+id+"  Token:  "+accessToken)
-                    // // or const token = jwt.sign( {id} );
-                    // const token = jwt.sign( {id:id}, process.env.JWT_SECRET, {
-                    //     expiresIn: process.env.JWT_EXPIRES_IN
-                    // });
-
-                    // console.log("The token is: " + token);
-
                     const cookieOptions = {
                         expires: new Date(
                             Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -113,10 +131,13 @@ exports.login = async (req,res) =>{
                     }
 
                     res.cookie('acess-token', accessToken, cookieOptions);
+                    res.cookie('acess-token-id', id, cookieOptions);
                     //res.cookie('teste', 'teste', cookieOptions);
 
                     // or res.status(200).redirect('/?valid=' + token)
                     res.json({
+                        message: "Usuario de id:"+id+" está conectado!",
+                        id: id,
                         email: email,
                         token: accessToken
                     });
@@ -136,138 +157,365 @@ exports.login = async (req,res) =>{
 
 }
 
-exports.add_projeto = async (req,res) =>{
-    console.log(req.body)
-    const name = req.body.name_projeto
-    db.query(
-        "SELECT * FROM projetos WHERE name_projeto = ?",
-        [name],
-        (error, results) =>{
-            if (error) {
-                console.log("aqui error");
-                console.log(error);
-            } else {
-                console.log("nao deu erro, conferindo results");
-                if (results.length > 0) {
-                    return res.render('index', {
-                        message: 'That project is already exists'
-                    });
-                }
-                db.query(
-                    "INSERT INTO projetos SET ?",
-                    {
-                        name_projeto: name
-                    },
-                    (error, results) =>{
-                        if (error) {
-                            console.log('aqui deu erro')
-                            console.log(error);
-                        } else {
-                            return res.json({
-                                message: "projeto adicionado",
-                                name_projeto: name,
-                            })
-                        }
-                    }
-                )
-            }
-        
-        }
-    )
-}
-
+// ADICIONAR NAVERS E PROJETOS
 exports.add_naver = (req,res) =>{
-    const {firstName, lastName, birthDate, admissionDate, jobRole, id_projetos} = req.body
+    const {firstName, lastName, birthDate, admissionDate, jobRole} = req.body
+    const user = req.cookies['acess-token-id']
+    console.log(user)
     db.query(
-        "SELECT * FROM navers WHERE firstName = ?",
-        [firstName],
+        "INSERT INTO navers SET ?",
+        {
+            firstName:firstName,
+            lastName:lastName,
+            birthDate:birthDate,
+            admissionDate:admissionDate,
+            jobRole:jobRole,
+            id_usuario: user
+        },
         (error, results) =>{
             if (error) {
-                console.log("aqui error");
                 console.log(error);
             } else {
-                console.log("nao deu erro");               
-                db.query(
-                    "INSERT INTO navers SET ?",
-                    {
+                //console.log(results);
+                return res.json({
+                    message: "naver adicionado pelo usuario de id: "+user+".",
+                    data: {
                         firstName:firstName,
                         lastName:lastName,
                         birthDate:birthDate,
                         admissionDate:admissionDate,
                         jobRole:jobRole,
-                        id_projetos:id_projetos
+                        id_usuario:user
+                    }
+                })
+            }
+        }
+    )
+};
+exports.add_projeto = (req,res) =>{
+    const user = req.cookies['acess-token-id'];
+    const {name_projeto } = req.body;
+
+    db.query(
+        "SELECT * FROM navers WHERE id_usuario = ?",
+        [user],
+        (erro, results) =>{
+            if (erro) {
+                console.log(errp);
+            } else if (results.length < 0) {
+                console.log(results.length);
+                res.status(400).json({
+                    message: "Não há resultados na query"
+                })
+            } else {
+                console.log(results)
+                const id_naver = results[0].id_naver;
+                db.query(
+                    "INSERT INTO projetos SET ?",
+                    {
+                        id_usuario: user,
+                        name_projeto: name_projeto,
+                        id_naver: id_naver
+                        
                     },
                     (error, results) =>{
                         if (error) {
                             console.log(error);
                         } else {
-                            console.log(results);
                             return res.json({
-                                message: "naver adicionado",
-                                firstName:firstName,
-                                lastName:lastName,
-                                birthDate:birthDate,
-                                admissionDate:admissionDate,
-                                jobRole:jobRole,
-                                id_projetos:id_projetos
+                                message: "projeto adicionado pelo usuario: "+user+" e naver: "+id_naver+".",
+                                id_usuario: user,
+                                name_projeto: name_projeto,
+                                id_naver: id_naver
+                            })
+                        }
+                    }
+                )  
+            }
+        }
+    )    
+}
+
+// PESQUISA DE NAVERS
+exports.list_navers = (req,res, next) =>{
+    const user = req.cookies["acess-token-id"];
+    db.query(
+        "SELECT * FROM navers WHERE id_usuario = ?",
+        [user],
+        (error,dataNaver) =>{
+            if(error){
+                console.log(error);
+            } else {
+                const id_naver = dataNaver[0].id_naver
+                db.query(
+                    "SELECT * FROM projetos WHERE id_naver = ?",
+                    [id_naver],
+                    (erro, dataProjetos) =>{
+                        if (erro) {
+                            console.log(erro);
+                        } else if (dataProjetos.length < 0) {
+                            console.log(dataProjetos.length);
+                            res.status(400).json({
+                                message: "Não há resultados na query"
+                            })
+                        } else {
+                            console.log(dataProjetos)
+                            res.status(200).json({
+                                message: "Lista dos navers criados pelo id: "+user,
+                                id_naver:dataNaver[0].id_naver,
+                                id_usuario:dataNaver[0].id_usuario,
+                                firstName:dataNaver[0].firstName,
+                                lastName:dataNaver[0].lastName,
+                                birthDate:dataNaver[0].birthDate,
+                                admissionDate:dataNaver[0].admissionDate,
+                                jobRole:dataNaver[0].jobRole,
+                                id_projeto: {
+                                    message: "Lista de projetos em que o naver: "+id_naver+" participa.",
+                                    data: dataProjetos
+                                }
+                            })
+                        }
+                    }
+                )
+            }   
+        }
+    )
+};
+exports.list_navers_by_id = (req,res, next) =>{
+    const {field} = req.params;
+    console.log(field)
+    db.query(
+        "SELECT * FROM navers WHERE id_naver = ? ",
+        [field],
+        (error,results) =>{
+            if(error){
+                console.log(error);
+            } else {
+                return res.json({
+                    message: "Lista de todos os navers com id: "+field+".",
+                    results
+                })
+            }   
+        }
+    )
+}
+exports.list_navers_by_id_projeto = (req,res, next) =>{
+    const {field} = req.params;
+    console.log(field)
+    db.query(
+        "SELECT * FROM navers WHERE id_projeto = ? ",
+        [field],
+        (error,results) =>{
+            if(error){
+                console.log(error);
+            } else {
+                return res.json({
+                    message: "Lista de todos os navers relacionados com projeto: "+field+".",
+                    results
+                })
+            }   
+        }
+    )
+}
+
+// PESQUISA DE PROJETOS
+exports.list_projetos = (req,res) =>{
+
+    const user = req.cookies["acess-token-id"];
+    db.query(
+        "SELECT * FROM projetos WHERE id_usuario = ?",
+        [user],
+        (error,result)=>{
+            if(error) {
+                console.log(error);
+            } else {
+                allData=[]
+                for (let i = 0; i < result.length; i++) {
+                    const id_naver = result[i].id_naver
+                    allData.push({
+                        id_projeto: result[i].id_projeto,
+                        id_usuario: result[i].id_usuario,
+                        name_projeto: result[i].name_projeto,
+                        naver:{
+                            id_naver
+                    }
+                    })
+                }
+                return res.status(200).json({
+                   allData
+                })               
+            }
+        }
+    )
+}
+exports.list_projetos_by_id = (req,res) =>{
+    const {field} = req.params;
+    console.log(field)
+    db.query(
+        "SELECT * FROM projetos WHERE id_projeto = ? ",
+        [field],
+        (error,results) =>{
+            if(error){
+                console.log(error);
+            } else {
+                return res.json({
+                    message: "Lista de todos os projetos com id: "+field+".",
+                    results
+                })
+            }   
+        }
+    )
+}
+exports.list_projetos_by_id_naver = (req,res) =>{
+    const {field} = req.params;
+    console.log(field)
+    db.query(
+        "SELECT * FROM projetos WHERE id_naver = ? ",
+        [field],
+        (error,results) =>{
+            if(error){
+                console.log(error);
+            } else {
+                return res.json({
+                    message: "Lista de todos os projetos com id_naver: "+field+".",
+                    results
+                })
+            }   
+        }
+    )
+}
+
+
+// ALTERAR PROJETO
+exports.update_projeto = (req,res) =>{
+    const user = req.cookies['acess-token-id'];
+    const {name_projeto, id_naver, id_projeto} = req.body;
+    db.query(
+        "UPDATE projetos SET name_projeto=?,id_naver=? WHERE id_usuario = ? AND id_projeto = ?",
+        [name_projeto,id_naver,user,id_projeto],
+        (error, results)=>{
+            if(error) {
+                console.log(error);
+            } else {
+                db.query(
+                    "SELECT * FROM projetos WHERE id_naver = ? AND id_usuario = ?",
+                    [id_naver,user],
+                    (error,result)=>{
+                        if(error) {
+                            console.log(error);
+                        } else {
+                            res.status(200).json({
+                                message: "O projeto "+id_projeto+" foi alterado",
+                                data:result
                             })
                         }
                     }
                 )
             }
-        
         }
     )
-}
-
-exports.list_navers = (req,res, next) =>{
     
+}   
+// ALTERAR NAVER
+exports.update_naver = (req,res) =>{
+    const user = req.cookies['acess-token-id'];
+    const {firstName, lastName, birthDate, admissionDate, 
+        jobRole, id_projeto} = req.body;
     db.query(
-        "SELECT * FROM navers", (error,results) =>{
-            if(error){
+
+        "UPDATE navers SET firstName = ?, lastName = ?, birthDate = ?, admissionDate = ?, \
+        jobRole = ?, id_projeto = ? WHERE id_usuario = ?",
+        [firstName, lastName, birthDate, admissionDate, 
+            jobRole, id_projeto, user],
+
+        (error, results)=>{
+            if(error) {
                 console.log(error);
             } else {
-                //console.log(results[0].firstName)
-                const data = [];
-                for (var i=0; i<results.length; i++){
-                    data.push({
-                            firstName: results[i].firstName,
-                            lastName: results[i].lastName,
-                            birthDate: results[i].birthDate,
-                            admissionDate: results[i].admissionDate,
-                            jobRole: results[i].jobRole,
-                            id_projetos: results[i].id_projetos
-                    });
-                }
-                res.status(200).json({data:data})
+                db.query(
+                    "SELECT * FROM navers WHERE id_usuario = ?",
+                    [user],
+                    (error,result)=>{
+                        if(error) {
+                            console.log(error);
+                        } else {
+                            res.status(200).json({
+                                message: "O naver de usuario "+user+" foi alterado",
+                                data:result
+                            })
+                        }
+                    }
+                )
             }
         }
     )
 }
 
-exports.list_projetos = (req,res, next) =>{
-    
+
+// DELETAR PROJETO
+exports.delete_projeto = (req,res) =>{
+    const user = req.cookies['acess-token-id'];
+    const { id_projeto } = req.params;
     db.query(
-        "SELECT * FROM projetos", (error,results) =>{
-            if(error){
+        "DELETE FROM projetos WHERE id_projeto = ?",
+        [id_projeto],
+        (error, results)=>{
+            if(error) {
                 console.log(error);
             } else {
-                //console.log(results[0].firstName)
-                const data = [];
-                for (var i=0; i<results.length; i++){
-                    data.push({
-                            id: results[i].id_projeto,
-                            name_projeto: results[i].name_projeto,
-                            
-                    });
-                }
-                res.status(200).json({data:data})
+                db.query(
+                    "SELECT * FROM projetos WHERE id_usuario = ?",
+                    [user],
+                    (error,result)=>{
+                        if(error) {
+                            console.log(error);
+                        } else {
+                            res.status(200).json({
+                                message: "O projeto "+id_projeto+" foi deletado",
+                                data:result,
+                            })
+                        }
+                    }
+                )
             }
         }
     )
+    
+}   
 
-
-    // res.json({
-    //     message: "OK"
-    // })
+// DELETAR NAVER
+// IMPLEMENTAR ONCASCADE
+exports.delete_naver = (req,res) =>{
+    const user = req.cookies['acess-token-id'];
+    const { id_naver } = req.params;
+    db.query(
+        "DELETE FROM navers WHERE id_naver = ?",
+        [id_naver],
+        (error, results)=>{
+            if(error) {
+                console.log(error);
+            } else {
+                db.query(
+                    "SELECT * FROM navers WHERE id_usuario = ?",
+                    [user],
+                    (error,result)=>{
+                        if(error) {
+                            console.log(error);
+                        } else {
+                            res.status(200).json({
+                                message: "O naver "+id_naver+" foi deletado",
+                                data:result,
+                            })
+                        }
+                    }
+                )
+            }
+        }
+    )
+    
 }  
+
+
+
+
+

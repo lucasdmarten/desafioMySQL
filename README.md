@@ -101,10 +101,31 @@ mysql> FLUSH PRIVILEGES;
  ```bash
  http://localhost:4000/auth/add_naver/
  ```
- ### (INDEX) - Rota para listar todos os navers:
+ 
+ ### (INDEX) - Rota para mostrar o naver criado pelo usuario autenticado:
  ```bash
- # Navers
+ # GET - O usuario poderá criar apenas um naver, e um naver está relacionado a n projetos
  http://localhost:4000/auth/list_navers
+
+ # PUT - Filtrar navers por id_naver, inclusive navers criados por outros usuarios
+ http://localhost:4000/auth/list_navers_by_id/<int>
+
+#  # PUT - Filtrar navers por id do projeto
+#  http://localhost:4000/auth/list_navers_by_id_projeto/<int>
+
+ ```
+ ### (UPDATE) - Rota para alterar o naver do usuario autenticado:
+ Requer o field id_projeto e id_naver na body
+ ```bash
+ # PUT - Alterar naver vinculado ao usuario autenticado
+ http://localhost:4000/auth/update_naver
+ ```
+
+### (DELETE) - Rota para deletar o naver do usuario autenticado:
+Requer id do naver a ser deletado
+ ```bash
+ # PUT - Alterar naver vinculado ao usuario autenticado
+ http://localhost:4000/auth/delete_naver/<id_naver>
  ```
 <br>
 <br>
@@ -117,11 +138,26 @@ mysql> FLUSH PRIVILEGES;
  ```
  ### (INDEX) - Rota para listar todos os projetos:
  ```bash
- # Navers
+ # GET - Listar projetos criados pelo usuario
  http://localhost:4000/auth/list_projetos
+  # PUT - Filtrar projeto por id do projeto, inclusive projetos criados por outros usuarios
+ http://localhost:4000/auth/list_projetos_by_id/<int>
+ # PUT - Filtrar projetos por id do naver,  inclusive projetos criados por outros usuarios
+ http://localhost:4000/auth/list_projetos_by_id_naver/<int>
+
  ```
-
-
+ ### (UPDATE) - Rota para alterar apenas os projetos do usuario autenticado:
+ Requer o field id_projeto e id_naver na body
+ ```bash
+ # PUT - Alterar projeto vinculado ao usuario autenticado
+ http://localhost:4000/auth/update_projeto
+ ```
+  ### (DELETE) - Rota para alterar o projetos do usuario autenticado:
+Requer id do projeto a ser deletado
+ ```bash
+ # PUT - Alterar naver vinculado ao usuario autenticado
+ http://localhost:4000/auth/delete_projeto/<int_naver>
+ ```
 
 <br>
 
