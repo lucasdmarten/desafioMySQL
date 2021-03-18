@@ -20,44 +20,39 @@ db.connect( (error) => {
     }
 });
 
-exports.teste = (req,res) =>{
-    user = req.cookies['acess-token-id']
-    db.query(
-        "SELECT * FROM navers WHERE id_usuario = ?",
-        [user],
-        (erro, results) =>{
-            if (erro) {
-                console.log(errp);
-            } else if (results.length < 0) {
-                console.log(results.length);
-                res.status(400).json({
-                    message: "Não há resultados na query"
-                })
-            } else {
-                console.log(results)
-                const id_naver = results[0].id_naver;
-                const naverData = results[0];
-                res.json({
-                    id_naver:id_naver,
-                    naverData:naverData.lastName
-                })
+// exports.teste = (req,res) =>{
+//     user = req.cookies['acess-token-id']
+//     db.query(
+//         "SELECT * FROM navers WHERE id_usuario = ?",
+//         [user],
+//         (erro, results) =>{
+//             if (erro) {
+//                 console.log(errp);
+//             } else if (results.length < 0) {
+//                 console.log(results.length);
+//                 res.status(400).json({
+//                     message: "Não há resultados na query"
+//                 })
+//             } else {
+//                 console.log(results)
+//                 const id_naver = results[0].id_naver;
+//                 const naverData = results[0];
+//                 res.json({
+//                     id_naver:id_naver,
+//                     naverData:naverData.lastName
+//                 })
 
 
-            }
-        }
-    )
-}
+//             }
+//         }
+//     )
+// }
 // AUTENTICAÇÃO
 exports.register = (req,res) =>{
     console.log(req.body);
     
-    //    const name = req.body.name;
-    //    const email = req.body.email;
-    //   const password = req.body.password;
-    //    const passwordConfirm = req.body.passwordConfirm;
-        
-    // or
-    const {username,email,password,passwordConfirm} = req.body;
+
+    const {email,password,passwordConfirm} = req.body;
 
     db.query(
         "SELECT email FROM usuarios WHERE email = ?",
@@ -81,7 +76,6 @@ exports.register = (req,res) =>{
             db.query(
                 "INSERT INTO usuarios SET ?",
                 {   
-                    username:username,
                     email:email,
                     password: hashedPassword
                 },
@@ -91,7 +85,6 @@ exports.register = (req,res) =>{
                     } else {
                         return res.status(200).json({
                             message: 'WELCOME:',
-                            name:username,
                             email:email
                         });
                     }
@@ -165,6 +158,7 @@ exports.add_naver = (req,res) =>{
     db.query(
         "INSERT INTO navers SET ?",
         {
+            id_naver: user,
             firstName:firstName,
             lastName:lastName,
             birthDate:birthDate,
@@ -175,6 +169,10 @@ exports.add_naver = (req,res) =>{
         (error, results) =>{
             if (error) {
                 console.log(error);
+          
+                return res.status(400).json({
+                    message: "Usuario já possui um naver vinculado a conta."
+                })
             } else {
                 //console.log(results);
                 return res.json({
@@ -197,11 +195,11 @@ exports.add_projeto = (req,res) =>{
     const {name_projeto } = req.body;
 
     db.query(
-        "SELECT * FROM navers WHERE id_usuario = ?",
+        "SELECT * FROM navers WHERE id_naver = ?",
         [user],
         (erro, results) =>{
             if (erro) {
-                console.log(errp);
+                console.log(erro);
             } else if (results.length < 0) {
                 console.log(results.length);
                 res.status(400).json({
@@ -213,9 +211,8 @@ exports.add_projeto = (req,res) =>{
                 db.query(
                     "INSERT INTO projetos SET ?",
                     {
-                        id_usuario: user,
                         name_projeto: name_projeto,
-                        id_naver: id_naver
+                        id_naver: user
                         
                     },
                     (error, results) =>{
@@ -240,16 +237,18 @@ exports.add_projeto = (req,res) =>{
 exports.list_navers = (req,res, next) =>{
     const user = req.cookies["acess-token-id"];
     db.query(
-        "SELECT * FROM navers WHERE id_usuario = ?",
+        "SELECT * FROM navers WHERE id_naver = ?",
         [user],
         (error,dataNaver) =>{
             if(error){
                 console.log(error);
+                res.status(400).json({
+                    message: "Não há resultados na query"
+                })
             } else {
-                const id_naver = dataNaver[0].id_naver
                 db.query(
                     "SELECT * FROM projetos WHERE id_naver = ?",
-                    [id_naver],
+                    [user],
                     (erro, dataProjetos) =>{
                         if (erro) {
                             console.log(erro);
@@ -269,8 +268,8 @@ exports.list_navers = (req,res, next) =>{
                                 birthDate:dataNaver[0].birthDate,
                                 admissionDate:dataNaver[0].admissionDate,
                                 jobRole:dataNaver[0].jobRole,
-                                id_projeto: {
-                                    message: "Lista de projetos em que o naver: "+id_naver+" participa.",
+                                projetos: {
+                                    message: "Lista de projetos em que o naver: "+user+" participa.",
                                     data: dataProjetos
                                 }
                             })
@@ -323,7 +322,7 @@ exports.list_projetos = (req,res) =>{
 
     const user = req.cookies["acess-token-id"];
     db.query(
-        "SELECT * FROM projetos WHERE id_usuario = ?",
+        "SELECT * FROM projetos WHERE id_naver = ?",
         [user],
         (error,result)=>{
             if(error) {
@@ -336,12 +335,13 @@ exports.list_projetos = (req,res) =>{
                         id_projeto: result[i].id_projeto,
                         id_usuario: result[i].id_usuario,
                         name_projeto: result[i].name_projeto,
-                        naver:{
+                        naver:{                
                             id_naver
                     }
                     })
                 }
                 return res.status(200).json({
+                   message: "Projetos em que o naver "+user+" participou.",
                    allData
                 })               
             }
@@ -389,17 +389,18 @@ exports.list_projetos_by_id_naver = (req,res) =>{
 // ALTERAR PROJETO
 exports.update_projeto = (req,res) =>{
     const user = req.cookies['acess-token-id'];
-    const {name_projeto, id_naver, id_projeto} = req.body;
+    const {name_projeto} = req.body;
+    const { id_projeto } = req.params;
     db.query(
-        "UPDATE projetos SET name_projeto=?,id_naver=? WHERE id_usuario = ? AND id_projeto = ?",
-        [name_projeto,id_naver,user,id_projeto],
+        "UPDATE projetos SET name_projeto=? WHERE id_naver = ? AND id_projeto = ?",
+        [name_projeto,user,id_projeto],
         (error, results)=>{
             if(error) {
                 console.log(error);
             } else {
                 db.query(
-                    "SELECT * FROM projetos WHERE id_naver = ? AND id_usuario = ?",
-                    [id_naver,user],
+                    "SELECT * FROM projetos WHERE id_naver = ?",
+                    [user],
                     (error,result)=>{
                         if(error) {
                             console.log(error);
@@ -420,32 +421,22 @@ exports.update_projeto = (req,res) =>{
 exports.update_naver = (req,res) =>{
     const user = req.cookies['acess-token-id'];
     const {firstName, lastName, birthDate, admissionDate, 
-        jobRole, id_projeto} = req.body;
+        jobRole} = req.body;
     db.query(
 
         "UPDATE navers SET firstName = ?, lastName = ?, birthDate = ?, admissionDate = ?, \
-        jobRole = ?, id_projeto = ? WHERE id_usuario = ?",
+        jobRole = ?  WHERE id_usuario = ?",
         [firstName, lastName, birthDate, admissionDate, 
-            jobRole, id_projeto, user],
+            jobRole, user],
 
         (error, results)=>{
             if(error) {
                 console.log(error);
             } else {
-                db.query(
-                    "SELECT * FROM navers WHERE id_usuario = ?",
-                    [user],
-                    (error,result)=>{
-                        if(error) {
-                            console.log(error);
-                        } else {
-                            res.status(200).json({
-                                message: "O naver de usuario "+user+" foi alterado",
-                                data:result
-                            })
-                        }
-                    }
-                )
+                res.status(200).json({
+                    message: "O naver de usuario "+user+" foi alterado",
+                    data: req.body
+                })
             }
         }
     )
@@ -457,14 +448,14 @@ exports.delete_projeto = (req,res) =>{
     const user = req.cookies['acess-token-id'];
     const { id_projeto } = req.params;
     db.query(
-        "DELETE FROM projetos WHERE id_projeto = ?",
-        [id_projeto],
+        "DELETE FROM projetos WHERE id_naver = ? AND id_projeto = ?",
+        [user,id_projeto],
         (error, results)=>{
             if(error) {
                 console.log(error);
             } else {
                 db.query(
-                    "SELECT * FROM projetos WHERE id_usuario = ?",
+                    "SELECT * FROM projetos WHERE id_naver = ?",
                     [user],
                     (error,result)=>{
                         if(error) {
@@ -487,28 +478,17 @@ exports.delete_projeto = (req,res) =>{
 // IMPLEMENTAR ONCASCADE
 exports.delete_naver = (req,res) =>{
     const user = req.cookies['acess-token-id'];
-    const { id_naver } = req.params;
     db.query(
         "DELETE FROM navers WHERE id_naver = ?",
-        [id_naver],
+        [user],
         (error, results)=>{
             if(error) {
                 console.log(error);
             } else {
-                db.query(
-                    "SELECT * FROM navers WHERE id_usuario = ?",
-                    [user],
-                    (error,result)=>{
-                        if(error) {
-                            console.log(error);
-                        } else {
-                            res.status(200).json({
-                                message: "O naver "+id_naver+" foi deletado",
-                                data:result,
-                            })
-                        }
-                    }
-                )
+                res.status(200).json({
+                    message: "O naver "+user+" foi deletado",
+                    data:results,
+                })
             }
         }
     )

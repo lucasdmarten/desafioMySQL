@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 
-router.get('/teste', authController.teste);
+// router.get('/teste', authController.teste);
 
 
 router.post('/register', authController.register);
@@ -23,11 +23,11 @@ router.put('/list_projetos_by_id/:field', validateToken, authController.list_pro
 router.put('/list_projetos_by_id_naver/:field', validateToken, authController.list_projetos_by_id_naver);
 
 
-router.put('/update_projeto', validateToken, authController.update_projeto);
+router.put('/update_projeto/:id_projeto', validateToken, authController.update_projeto);
 router.put('/update_naver', validateToken, authController.update_naver);
 
 router.delete('/delete_projeto/:id_projeto', validateToken, authController.delete_projeto);
-router.delete('/delete_naver/:id_naver', validateToken, authController.delete_naver);
+router.delete('/delete_naver/', validateToken, authController.delete_naver);
 
 
 
