@@ -52,6 +52,9 @@ mysql> CREATE USER 'navedex_mysql'@'%' IDENTIFIED WITH mysql_native_password BY 
 # Garantir acesso ao usuario
 mysql> GRANT ALL ON navedex_api.* TO 'navedex_mysql'@'%';
 mysql> FLUSH PRIVILEGES;
+# Ativar database
+mysql> USE navedex_api;
+
 
 # Criar tabelas do projeto:
 
@@ -141,7 +144,7 @@ mysql> CREATE TABLE projetos (
  ```bash
  # http://localhost:4000/auth/register/
 
-$ curl --location --request POST 'http://localhost:4001/auth/register/' \
+$ curl --location --request POST 'http://localhost:4000/auth/register/' \
         --header 'Content-Type: application/json' \
         --data-raw '{
             "email":"testando@gmail.com",
@@ -156,7 +159,7 @@ $ curl --location --request POST 'http://localhost:4001/auth/register/' \
  ```bash
  #http://localhost:4000/auth/login/
 
-$ curl --location --request POST 'http://localhost:4001/auth/login/' \
+$ curl --location --request POST 'http://localhost:4000/auth/login/' \
       --header 'Content-Type: application/json' \
       --data-raw '{
           "email":"testando@gmail.com",
@@ -194,7 +197,7 @@ $ {"message":"Usuario de id:3 está conectado!","id":3,"email":"testando@gmail.c
  ```bash
  http://localhost:4000/auth/add_naver/
 
-$ curl --location --request POST 'http://localhost:4001/auth/add_naver/' \
+$ curl --location --request POST 'http://localhost:4000/auth/add_naver/' \
         --header 'Content-Type: application/json' \
         --header 'Cookie: acess-token=  substituirTOKEN  ; acess-token-id= substituirID' \
         --data-raw '{
@@ -213,7 +216,7 @@ $ curl --location --request POST 'http://localhost:4001/auth/add_naver/' \
  # O usuario poderá criar apenas um naver, e um naver está relacionado a n projetos
  http://localhost:4000/auth/list_navers
  
-$ curl --location --request GET 'http://localhost:4001/auth/list_navers' \
+$ curl --location --request GET 'http://localhost:4000/auth/list_navers' \
 --header 'Cookie: acess-token=  substituirTOKEN  ; acess-token-id= substituirID' \
 --data-raw ''
  ```
@@ -225,7 +228,7 @@ $ curl --location --request GET 'http://localhost:4001/auth/list_navers' \
  # PUT - Alterar naver vinculado ao usuario autenticado
  http://localhost:4000/auth/update_naver
 
-$ curl --location --request PUT 'localhost:4001/auth/update_naver' \
+$ curl --location --request PUT 'localhost:4000/auth/update_naver' \
 --header 'Content-Type: application/json' \
 --header 'Cookie: acess-token=  substituirTOKEN  ; acess-token-id= substituirID' \
 --data-raw '{
@@ -265,7 +268,7 @@ Requer id do naver a ser deletado
  ```bash
  http://localhost:4000/auth/add_projetos/
 
-$ curl --location --request POST 'http://localhost:4001/auth/add_projeto/' \
+$ curl --location --request POST 'http://localhost:4000/auth/add_projeto/' \
         --header 'Content-Type: application/json' \
         --header 'Cookie: acess-token=   substituirTOKEN   ; acess-token-id= substituirID' \
         --data-raw '{
@@ -284,7 +287,7 @@ $ curl --location --request POST 'http://localhost:4001/auth/add_projeto/' \
  # GET - Listar projetos criados pelo usuario
  http://localhost:4000/auth/list_projetos
 
- $ curl --location --request GET 'http://localhost:4001/auth/list_projetos/' \
+ $ curl --location --request GET 'http://localhost:4000/auth/list_projetos/' \
 --header 'Cookie: acess-token=   substituirTOKEN   ; acess-token-id= substituirID' \
 --data-raw ''
 
@@ -300,7 +303,7 @@ $ curl --location --request POST 'http://localhost:4001/auth/add_projeto/' \
  # PUT - Alterar projeto vinculado ao usuario autenticado
  http://localhost:4000/auth/update_projeto/<id_projeto>
 
-curl --location --request PUT 'localhost:4001/auth/update_projeto/<id_projeto>' \
+curl --location --request PUT 'localhost:4000/auth/update_projeto/<id_projeto>' \
 --header 'Content-Type: application/json' \
 --header 'Cookie: acess-token=   substituirTOKEN   ; acess-token-id= substituirID' \
 --data-raw '{
@@ -313,7 +316,7 @@ curl --location --request PUT 'localhost:4001/auth/update_projeto/<id_projeto>' 
  # PUT - Alterar naver vinculado ao usuario autenticado
  http://localhost:4000/auth/delete_projeto/<int_projeto>
 
-$ curl --location --request DELETE 'http://localhost:4001/auth/delete_projeto/<id_projeto>' \
+$ curl --location --request DELETE 'http://localhost:4000/auth/delete_projeto/<id_projeto>' \
 --header 'Cookie: acess-token=   substituirTOKEN   ; acess-token-id= substituirID'
  ```
 

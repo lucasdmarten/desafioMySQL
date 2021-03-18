@@ -53,6 +53,6 @@ app.use('/auth', routesAUTH)
 
 
 
-app.listen(4001, ()=>{
-    console.log("Runserver on 4000...");
+app.listen(4000, ()=>{
+    console.log("Runserver on http://localhost:4000 ...");
 });
