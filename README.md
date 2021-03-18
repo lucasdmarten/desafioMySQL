@@ -6,16 +6,16 @@
 <p> O banco de dados possui 3 tabelas: usuarios, navers e projetos.</p>
 USUARIOS:
 <li> podem criar apenas um naver.</li>
-<li> podem alterar ou deletar apenas o seu naver e seus projetos que estão ligados ao naver.</li>
+<li> podem alterar ou deletar apenas o seu naver e os projetos que estão ligados a ele.</li>
+<li> podem visualizar todos navers e seus projetos.??</li>
 <br>
 NAVERS:
 <li> id do usuario é usado para criação do naver.</li>
 <li> está vinculado ao usuario pelo id.</li>
-<li> podem criar varios projetos.</li>
-<li> podem alterar ou deletar apenas o seu naver e seus projetos.</li>
+<li> podem participar de N projetos.</li>
 <br>
 PROJETOS:
-<li> está vinculado a um naver.</li>
+<li> estão vinculados a um naver.</li>
 <br>
 
 
@@ -23,9 +23,14 @@ PROJETOS:
 <p>As seguintes ferramentas foram usadas na construção do projeto:</p>
 <ul>
   <li><a href="">NodeJS</a></li>
-  <li><a href="">MySQL</a></li>
-  <li><a href="">Express</a></li>
-  <li><a href="">JWT</a></li>
+  <li><a href="">mysql</a></li>
+  <li><a href="">express</a></li>
+  <li><a href="">jsonwebtoken</a></li>
+  <li><a href="">dotenv</a></li>
+  <li><a href="">bcryptjs</a></li>
+  <li><a href="">hbs</a></li>
+  <li><a href="">cookie-parser</a></li>
+
 </ul>
 
 #
@@ -77,9 +82,9 @@ mysql> CREATE TABLE projetos (
     -> id_projeto INT NOT NULL PRIMARY KEY 
     -> AUTO_INCREMENT, 
     -> name_projeto VARCHAR(255) DEFAULT NULL, 
-    -> id_naver INT, 
-    -> FOREIGN KEY (id_naver) REFERENCES navers
-    -> (id_naver) ON DELETE CASCADE ON UPDATE 
+    -> id_usuario INT, 
+    -> FOREIGN KEY (id_usuario) REFERENCES navers
+    -> (id_usuario) ON DELETE CASCADE ON UPDATE 
     -> CASCADE
     -> );
  ```
@@ -118,9 +123,10 @@ mysql> CREATE TABLE projetos (
  # Entre na pasta do projeto
  $ cd navedexAPI_nodejs
  # Instale todas as bibliotecas
+ $ npm install --save-dev nodemon
  $ npm install express mysql dotenv bcryptjs cookie-parser jsonwebtoken hbs
  # Runserver...
- $ node index.js
+ $ npm start
  ```
 <br>
 <br>
@@ -170,7 +176,7 @@ $ {"message":"Usuario de id:3 está conectado!","id":3,"email":"testando@gmail.c
  http://localhost:4000/login/
  ```
 
-# APÓS LOGIN CRIAR NAVER!
+# APÓS LOGIN CRIE UM NAVER E ALGUNS PROJETOS!
 
 
 <br>

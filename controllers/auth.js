@@ -195,7 +195,7 @@ exports.add_projeto = (req,res) =>{
     const {name_projeto } = req.body;
 
     db.query(
-        "SELECT * FROM navers WHERE id_naver = ?",
+        "SELECT * FROM navers WHERE id_usuario = ?",
         [user],
         (erro, results) =>{
             if (erro) {
@@ -212,7 +212,7 @@ exports.add_projeto = (req,res) =>{
                     "INSERT INTO projetos SET ?",
                     {
                         name_projeto: name_projeto,
-                        id_naver: user
+                        id_usuario: user
                         
                     },
                     (error, results) =>{
@@ -246,8 +246,9 @@ exports.list_navers = (req,res, next) =>{
                     message: "Não há resultados na query"
                 })
             } else {
+                console.error("query");
                 db.query(
-                    "SELECT * FROM projetos WHERE id_naver = ?",
+                    "SELECT * FROM projetos WHERE id_usuario = ?",
                     [user],
                     (erro, dataProjetos) =>{
                         if (erro) {
@@ -322,7 +323,7 @@ exports.list_projetos = (req,res) =>{
 
     const user = req.cookies["acess-token-id"];
     db.query(
-        "SELECT * FROM projetos WHERE id_naver = ?",
+        "SELECT * FROM projetos WHERE id_usuario = ?",
         [user],
         (error,result)=>{
             if(error) {
@@ -392,14 +393,14 @@ exports.update_projeto = (req,res) =>{
     const {name_projeto} = req.body;
     const { id_projeto } = req.params;
     db.query(
-        "UPDATE projetos SET name_projeto=? WHERE id_naver = ? AND id_projeto = ?",
+        "UPDATE projetos SET name_projeto=? WHERE id_usuario = ? AND id_projeto = ?",
         [name_projeto,user,id_projeto],
         (error, results)=>{
             if(error) {
                 console.log(error);
             } else {
                 db.query(
-                    "SELECT * FROM projetos WHERE id_naver = ?",
+                    "SELECT * FROM projetos WHERE id_usuario = ?",
                     [user],
                     (error,result)=>{
                         if(error) {
