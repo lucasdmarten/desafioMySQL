@@ -237,7 +237,7 @@ exports.add_projeto = (req,res) =>{
 exports.list_navers = (req,res, next) =>{
     const user = req.cookies["acess-token-id"];
     db.query(
-        "SELECT * FROM navers WHERE id_naver = ?",
+        "SELECT * FROM navers WHERE id_usuario = ?",
         [user],
         (error,dataNaver) =>{
             if(error){
@@ -262,7 +262,7 @@ exports.list_navers = (req,res, next) =>{
                             console.log(dataProjetos)
                             res.status(200).json({
                                 message: "Lista dos navers criados pelo id: "+user,
-                                id_naver:dataNaver[0].id_naver,
+                                id_naver:dataNaver[0].id_usuario,
                                 id_usuario:dataNaver[0].id_usuario,
                                 firstName:dataNaver[0].firstName,
                                 lastName:dataNaver[0].lastName,
@@ -329,22 +329,26 @@ exports.list_projetos = (req,res) =>{
             if(error) {
                 console.log(error);
             } else {
-                allData=[]
-                for (let i = 0; i < result.length; i++) {
-                    const id_naver = result[i].id_naver
-                    allData.push({
-                        id_projeto: result[i].id_projeto,
-                        id_usuario: result[i].id_usuario,
-                        name_projeto: result[i].name_projeto,
-                        naver:{                
-                            id_naver
+                db.query(
+                    "SELECT * FROM navers WHERE id_usuario = ?",
+                    [user],
+                    (error,dataNaver)=>{
+                        allData=[]
+                        for (let i = 0; i < result.length; i++) {
+                            const id_naver = result[i].id_usuario
+                            allData.push({
+                                id_projeto: result[i].id_projeto,
+                                id_usuario: result[i].id_usuario,
+                                name_projeto: result[i].name_projeto,
+                                naver:dataNaver
+                            })
+                        }
+                        return res.status(200).json({
+                                message: "Projetos em que o naver "+user+" participou.",
+                                data: allData
+                        }) 
                     }
-                    })
-                }
-                return res.status(200).json({
-                   message: "Projetos em que o naver "+user+" participou.",
-                   allData
-                })               
+                )              
             }
         }
     )
@@ -449,14 +453,14 @@ exports.delete_projeto = (req,res) =>{
     const user = req.cookies['acess-token-id'];
     const { id_projeto } = req.params;
     db.query(
-        "DELETE FROM projetos WHERE id_naver = ? AND id_projeto = ?",
+        "DELETE FROM projetos WHERE id_usuario = ? AND id_projeto = ?",
         [user,id_projeto],
         (error, results)=>{
             if(error) {
                 console.log(error);
             } else {
                 db.query(
-                    "SELECT * FROM projetos WHERE id_naver = ?",
+                    "SELECT * FROM projetos WHERE id_usuario = ?",
                     [user],
                     (error,result)=>{
                         if(error) {
@@ -476,11 +480,10 @@ exports.delete_projeto = (req,res) =>{
 }   
 
 // DELETAR NAVER
-// IMPLEMENTAR ONCASCADE
 exports.delete_naver = (req,res) =>{
     const user = req.cookies['acess-token-id'];
     db.query(
-        "DELETE FROM navers WHERE id_naver = ?",
+        "DELETE FROM navers WHERE id_usuario = ?",
         [user],
         (error, results)=>{
             if(error) {
