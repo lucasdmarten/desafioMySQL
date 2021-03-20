@@ -1,13 +1,17 @@
-<h1 align="center">Navedex Api (EM DESENVOLVIMENTO)</h1>
+<h1 align="center">Navedex Api </h1>
 <p align="center"> Sistema desenvolvido para o teste proposto pela empresa <a href="https://github.com/naveteam">Nave</a>.</p>
 
 
 <h3>💻 Sobre o projeto</h3>
+
+BANCO DE DADOS:
+<li>MYSQL</li>
+
+<br>
 <p> O banco de dados possui 3 tabelas: usuarios, navers e projetos.</p>
 USUARIOS:
 <li> podem criar apenas um naver.</li>
 <li> podem alterar ou deletar apenas o seu naver e os projetos que estão ligados a ele.</li>
-<li> podem visualizar todos navers e seus projetos.??</li>
 <br>
 NAVERS:
 <li> id do usuario é usado para criação do naver.</li>
@@ -117,14 +121,10 @@ mysql> CREATE TABLE projetos (
 
 
  ```bash
- 
- # Crie uma pasta
- $ mkdir navedexAPI_nodejs
- # Entre na pasta e clone o repositorio
- $ cd navedexAPI_nodejs
- $ git clone git@github.com:lucasdmarten/navedexAPI_nodejs.git
+ # Clone o projeto para seu computador
+ $ git clone git@github.com:lucasdmarten/desafioMySQL.git
  # Entre na pasta do projeto
- $ cd navedexAPI_nodejs
+ $ cd desafioMySQL
  # Instale todas as bibliotecas
  $ npm install --save-dev nodemon
  $ npm install express mysql dotenv bcryptjs cookie-parser jsonwebtoken hbs
@@ -242,7 +242,7 @@ $ curl --location --request PUT 'localhost:4000/auth/update_naver' \
 
 
 <br>
-<h2 align=center>AO DELETAR TODOS OS PROJETOS DO SEU NAVER TAMBÉM SERÃO EXCLUIDOS</h2> 
+<h2 align=center>AO DELETAR SEU NAVER, TODOS OS PROJETOS DO TAMBÉM SERÃO EXCLUIDOS</h2> 
 <br>
 
 ### (DELETE) - Rota para deletar o naver do usuario autenticado:
@@ -320,10 +320,11 @@ $ curl --location --request DELETE 'http://localhost:4000/auth/delete_projeto/<i
 --header 'Cookie: acess-token=   substituirTOKEN   ; acess-token-id= substituirID'
  ```
 
-<br>
 
+ <br>
  <h2> Dificuldades:</h2>
- <h3>EM DESENVOLVIMENTO</h3>
- <!-- <p>Neste projeto fiquei com muita dificuldade em fazer a relação correta entre Naver e Projeto. Usei o model User do próprio Django mas customizado com email obrigatório. A partir deste model foi criado o objeto Projeto que possui relação ManyToMany com o MyUser, ou seja, um usuario pode participar de N projetos e cada projeto possui relação com N usuarios. Posteriormente foi criado o objeto Naver que está relacionado com usuario a partir do campo OneToOneField, e também projetos a partir do campo ManyToManyField, assim um naver está ligado a apenas UM usuario e o naver pode estar ligado com varios projetos.</p>
- <p>Problema: Não consigo relacionar um Naver a um Projeto e nem o Projeto ao Naver a partir do método POST, só na pagina de admin do Django. Acredito que seja problema na serialização dos models.</p> -->
+ <li> Trabalhar com o mysql e as relações entre usuario, naver, e projeto. Por isso achei melhor fazer outra versão utilizando uma camada abstração de dados com o mongoose. </li>
+
+ 
+
  

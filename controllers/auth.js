@@ -20,33 +20,7 @@ db.connect( (error) => {
     }
 });
 
-// exports.teste = (req,res) =>{
-//     user = req.cookies['acess-token-id']
-//     db.query(
-//         "SELECT * FROM navers WHERE id_usuario = ?",
-//         [user],
-//         (erro, results) =>{
-//             if (erro) {
-//                 console.log(errp);
-//             } else if (results.length < 0) {
-//                 console.log(results.length);
-//                 res.status(400).json({
-//                     message: "Não há resultados na query"
-//                 })
-//             } else {
-//                 console.log(results)
-//                 const id_naver = results[0].id_naver;
-//                 const naverData = results[0];
-//                 res.json({
-//                     id_naver:id_naver,
-//                     naverData:naverData.lastName
-//                 })
 
-
-//             }
-//         }
-//     )
-// }
 // AUTENTICAÇÃO
 exports.register = (req,res) =>{
     console.log(req.body);
