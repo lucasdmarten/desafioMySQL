@@ -142,32 +142,19 @@ mysql> CREATE TABLE projects (
 <p>Registro de usuario:</p>
 
  ```bash
- # http://localhost:4000/auth/register/
-
-$ curl --location --request POST 'http://localhost:4000/auth/register/' \
-        --header 'Content-Type: application/json' \
-        --data-raw '{
-            "email":"testando@gmail.com",
-            "password":"123",
-            "passwordConfirm":"123"}'
+ POST http://localhost:4000/auth/register/
  ```
+ ![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/REGISTER.png?raw=true)
+
 <br>
 
 ### Rota para login:
 <p>Aqui sera feito login com base no cadastro feito préviamente, e será liberado o token access.</p>
 
  ```bash
- #http://localhost:4000/auth/login/
-
-$ curl --location --request POST 'http://localhost:4000/auth/login/' \
-      --header 'Content-Type: application/json' \
-      --data-raw '{
-          "email":"testando@gmail.com",
-          "password":"123"
-      }'
-
-$ {"message":"Usuario de id:3 está conectado!","id":3,"email":"testando@gmail.com","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjE2MDMxMDE4LCJleHAiOjE2MjM4MDcwMTh9.XBpvm5XjfVEnw9CTrKFj0gV09jCrOVfpeWkqbPJjUS8"}
+ POST http://localhost:4000/auth/login/
  ```
+![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/LOGIN.png?raw=true)
 
  
 <br>
@@ -188,57 +175,44 @@ $ {"message":"Usuario de id:3 está conectado!","id":3,"email":"testando@gmail.c
 
 
 <br>
-<h2 align=center> NAVERS:</h2>
 <br>
 
+<h1 align=center>START:</h1>
 
 ### Comece criando seu naver!
 ### (STORE) - Rota para criar navers:
  ```bash
- http://localhost:4000/auth/add_naver/
-
-$ curl --location --request POST 'http://localhost:4000/auth/add_naver/' \
-        --header 'Content-Type: application/json' \
-        --header 'Cookie: acess-token=  substituirTOKEN  ; acess-token-id= substituirID' \
-        --data-raw '{
-            "firstName":"teste",
-            "lastName":"teste",
-            "birthDate":"1994-10-27",
-            "admissionDate":"2020-04-08",
-            "jobRole":"developer"
-        }'
-
+ POST http://localhost:4000/auth/add_naver/
  ```
+ ![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/ADD_NAVER.png?raw=true)
+ ![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/ADD_NAVER2.png?raw=true)
 
+## Registre os projetos que o seu naver já participou
+### (STORE) - Rota para criar projetos:
+ ```bash
+ POST http://localhost:4000/auth/add_projetos/
+ ```
+ ![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/ADD_PROJECT.png?raw=true)
+ ![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/ADD_PROJECT2.png?raw=true)
+
+
+<h2 align=center> NAVERS:</h2>
 
  ### (INDEX) - Rota para mostrar o naver criado pelo usuario autenticado:
  ```bash
  # O usuario poderá criar apenas um naver, e um naver está relacionado a n projetos
- http://localhost:4000/auth/list_navers
- 
-$ curl --location --request GET 'http://localhost:4000/auth/list_navers' \
---header 'Cookie: acess-token=  substituirTOKEN  ; acess-token-id= substituirID' \
---data-raw ''
+ GET http://localhost:4000/auth/list_navers
  ```
+![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/LIST_NAVERS.png?raw=true)
+
 
  
  ### (UPDATE) - Rota para alterar o naver do usuario autenticado:
- Requer o field id_projeto e id_naver na body
  ```bash
- # PUT - Alterar naver vinculado ao usuario autenticado
- http://localhost:4000/auth/update_naver
-
-$ curl --location --request PUT 'localhost:4000/auth/update_naver' \
---header 'Content-Type: application/json' \
---header 'Cookie: acess-token=  substituirTOKEN  ; acess-token-id= substituirID' \
---data-raw '{
-    "firstName":"TESTE",
-    "lastName":"ALTERANDO",
-    "birthDate":"1994-10-27",
-    "admissionDate":"2020-04-08",
-    "jobRole":"Developer PLENO"
-}'
+ # Alterar naver vinculado ao usuario autenticado
+ PUT http://localhost:4000/auth/update_naver
  ```
+ ![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/UPDATE_NAVER.png?raw=true)
 
 
 <br>
@@ -246,8 +220,6 @@ $ curl --location --request PUT 'localhost:4000/auth/update_naver' \
 <br>
 
 ### (DELETE) - Rota para deletar o naver do usuario autenticado:
-Requer id do naver a ser deletado
-
  ```bash
  # DELETE - Deletar seu próprio naver vinculado ao usuario autenticado
  http://localhost:4000/auth/delete_naver/
@@ -263,62 +235,31 @@ Requer id do naver a ser deletado
 <h2 align=center> PROJETOS:</h2>
 <br>
 
-## Registre os projetos que o seu naver já participou
-### (STORE) - Rota para criar projetos:
- ```bash
- http://localhost:4000/auth/add_projetos/
-
-$ curl --location --request POST 'http://localhost:4000/auth/add_projeto/' \
-        --header 'Content-Type: application/json' \
-        --header 'Cookie: acess-token=   substituirTOKEN   ; acess-token-id= substituirID' \
-        --data-raw '{
-            "name_projeto": "projeto_teste"
-        }'
- ```
-
-
-<br>
-<br>
-<br>
-
 
  ### (INDEX) - Rota para listar todos os projetos:
  ```bash
- # GET - Listar projetos criados pelo usuario
- http://localhost:4000/auth/list_projetos
-
- $ curl --location --request GET 'http://localhost:4000/auth/list_projetos/' \
---header 'Cookie: acess-token=   substituirTOKEN   ; acess-token-id= substituirID' \
---data-raw ''
-
-
-#   # PUT - Filtrar projeto por id do projeto, inclusive projetos criados por outros usuarios
-#  http://localhost:4000/auth/list_projetos_by_id/<int>
-#  # PUT - Filtrar projetos por id do naver,  inclusive projetos criados por outros usuarios
-#  http://localhost:4000/auth/list_projetos_by_id_naver/<int>
-
+ # Listar projetos criados pelo usuario
+ GET http://localhost:4000/auth/list_projetos
  ```
+ ![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/LIST_PROJECTS.png?raw=true)
+
+
+
  ### (UPDATE) - Rota para alterar apenas os projetos do usuario autenticado:
  ```bash
- # PUT - Alterar projeto vinculado ao usuario autenticado
- http://localhost:4000/auth/update_projeto/<id_projeto>
-
-curl --location --request PUT 'localhost:4000/auth/update_projeto/<id_projeto>' \
---header 'Content-Type: application/json' \
---header 'Cookie: acess-token=   substituirTOKEN   ; acess-token-id= substituirID' \
---data-raw '{
-    "name_projeto":"bar do zÉ"
-}'
+ # Alterar projeto vinculado ao usuario autenticado
+ PUT http://localhost:4000/auth/update_projeto/<id_projeto>
  ```
+ ![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/UPDATE_PROJECT.png?raw=true)
+
 
 ### (DELETE) - Rota para alterar o projetos do usuario autenticado:
  ```bash
- # PUT - Alterar naver vinculado ao usuario autenticado
- http://localhost:4000/auth/delete_projeto/<int_projeto>
-
-$ curl --location --request DELETE 'http://localhost:4000/auth/delete_projeto/<id_projeto>' \
---header 'Cookie: acess-token=   substituirTOKEN   ; acess-token-id= substituirID'
+ # Deletar project vinculado ao usuario autenticado
+ DELETE http://localhost:4000/auth/delete_projeto/:id_project
  ```
+![alt text](https://github.com/lucasdmarten/desafioMySQL/blob/master/tutorial_inmsonia/UPDATE_PROJECT.png?raw=true)
+
 
 
  <br>
