@@ -63,8 +63,8 @@ mysql> USE navedex_api;
 # Criar tabelas do projeto:
 
 # usuarios
-mysql> CREATE TABLE usuarios (
-    -> id_usuario INT NOT NULL PRIMARY KEY AUTO_INCREMENT UNIQUE,
+mysql> CREATE TABLE users (
+    -> id_user INT NOT NULL PRIMARY KEY AUTO_INCREMENT UNIQUE,
     -> email VARCHAR(255) NOT NULL UNIQUE,
     -> password VARCHAR(255) NOT NULL
     -> );
@@ -78,20 +78,20 @@ mysql> CREATE TABLE navers (
     -> birthDate DATE DEFAULT NULL,
     -> admissionDate DATE DEFAULT NULL,
     -> jobRole VARCHAR(255) DEFAULT NULL,
-    -> id_usuario INT PRIMARY KEY,
-    -> FOREIGN KEY (id_usuario) REFERENCES
-    -> usuarios(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+    -> id_user INT PRIMARY KEY,
+    -> FOREIGN KEY (id_user) REFERENCES
+    -> users(id_user) ON DELETE CASCADE ON UPDATE CASCADE
     -> );
 
 
 # projetos
-mysql> CREATE TABLE projetos (
-    -> id_projeto INT NOT NULL PRIMARY KEY 
+mysql> CREATE TABLE projects (
+    -> id_project INT NOT NULL PRIMARY KEY 
     -> AUTO_INCREMENT, 
-    -> name_projeto VARCHAR(255) DEFAULT NULL, 
-    -> id_usuario INT, 
-    -> FOREIGN KEY (id_usuario) REFERENCES navers
-    -> (id_usuario) ON DELETE CASCADE ON UPDATE 
+    -> name_project VARCHAR(255) DEFAULT NULL, 
+    -> id_user INT, 
+    -> FOREIGN KEY (id_user) REFERENCES navers
+    -> (id_user) ON DELETE CASCADE ON UPDATE 
     -> CASCADE
     -> );
  ```
@@ -327,4 +327,5 @@ $ curl --location --request DELETE 'http://localhost:4000/auth/delete_projeto/<i
 
  
 
+ 
  
